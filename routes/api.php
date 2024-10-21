@@ -1,11 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\UserOnboardController;
-use App\Http\Controllers\ChatMessageController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1'], function () {
@@ -16,11 +12,8 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('register', [UserOnboardController::class, 'register']);
         });
         Route::group(['middleware' => ['auth:api']], function () {
-            Route::group(['prefix' => 'users'], function () {
-                Route::get('wallet-balance', [TransactionController::class, 'getWalletBalance']);
-                Route::post('make-payment', [TransactionController::class, 'makePayment']);
-                Route::post('fund-wallet', [TransactionController::class, 'fundWallet']);
-            });
+            Route::get('balance', [TransactionController::class, 'getBalance']);
+            Route::post('transaction', [TransactionController::class, 'performTransactions']);
         });
     });
 });

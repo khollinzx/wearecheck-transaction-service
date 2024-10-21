@@ -25,29 +25,11 @@ class TransactionController extends Controller
      * @param TransactionRequest $request
      * @return JsonResponse
      */
-    public function makePayment(TransactionRequest $request): JsonResponse
+    public function performTransactions(TransactionRequest $request): JsonResponse
     {
         $validated = $request->validated();
         try {
-            $response = $this->service->handleUserMakePayment(TransactionDto::TransactionDto($validated['amount']), $this->getUser());
-            if (!$response->status) return JsonResponseAPI::errorResponse($response->message);
-            return JsonResponseAPI::successResponse($response->message, $response->data, JsonResponseAPI::$SUCCESS);
-        } catch (\Exception $exception) {
-            Log::error($exception);
-            return JsonResponseAPI::errorResponse("Internal server error.", JsonResponseAPI::$BAD_REQUEST);
-        }
-    }
-
-    /**
-     * For a user to fund their wallet
-     * @param TransactionRequest $request
-     * @return JsonResponse
-     */
-    public function fundWallet(TransactionRequest $request): JsonResponse
-    {
-        $validated = $request->validated();
-        try {
-            $response = $this->service->handleUserFundWallet(TransactionDto::TransactionDto($validated['amount']), $this->getUser());
+            $response = $this->service->handleTransactions(TransactionDto::TransactionDto($validated['amount'], $validated['type']), $this->getUser());
             if (!$response->status) return JsonResponseAPI::errorResponse($response->message);
             return JsonResponseAPI::successResponse($response->message, $response->data, JsonResponseAPI::$SUCCESS);
         } catch (\Exception $exception) {
@@ -61,7 +43,7 @@ class TransactionController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function getWalletBalance(Request $request): JsonResponse
+    public function getBalance(Request $request): JsonResponse
     {
         try {
             $response = $this->userWalletService->retrieveUserWalletBalance($this->getUser());

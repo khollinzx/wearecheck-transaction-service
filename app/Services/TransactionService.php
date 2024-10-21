@@ -23,7 +23,26 @@ class TransactionService
      * @param Authenticatable|User $user
      * @return GenericServiceResponse
      */
-    public function handleUserMakePayment(TransactionDto $transactionDto, Authenticatable|User $user): GenericServiceResponse
+    public function handleTransactions(TransactionDto $transactionDto, Authenticatable|User $user): GenericServiceResponse
+    {
+        $response = new GenericServiceResponse();
+        try {
+            return $transactionDto->type === 'Credit' ?
+                $this->handleCreditTransaction($transactionDto, $user)
+                : $this->handleDebitTransaction($transactionDto, $user);
+        } catch (\Exception $exception) {
+            Log::error($exception->getMessage());
+            return $response;
+        }
+    }
+
+    /**
+     * To handle debit activities
+     * @param TransactionDto $transactionDto
+     * @param Authenticatable|User $user
+     * @return GenericServiceResponse
+     */
+    public function handleDebitTransaction(TransactionDto $transactionDto, Authenticatable|User $user): GenericServiceResponse
     {
         $response = new GenericServiceResponse();
         try {
@@ -61,7 +80,7 @@ class TransactionService
      * @param Authenticatable|User $user
      * @return GenericServiceResponse
      */
-    public function handleUserFundWallet(TransactionDto $transactionDto, Authenticatable|User $user): GenericServiceResponse
+    public function handleCreditTransaction(TransactionDto $transactionDto, Authenticatable|User $user): GenericServiceResponse
     {
         $response = new GenericServiceResponse();
         try {

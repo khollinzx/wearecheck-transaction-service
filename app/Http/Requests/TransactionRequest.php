@@ -22,14 +22,13 @@ class TransactionRequest extends BaseFormRequest
      */
     public function rules(): array
     {
-        if(in_array(basename($this->url()), ['make-payment','fund-wallet'])) {
+        if(in_array(basename($this->url()), ['transaction'])) {
             # validate header
             if(!$this->hasHeader('Content-Type') || $this->header('Content-Type') !== 'application/json')
                 throw new HttpResponseException(JsonResponseAPI::errorResponse( 'Include Content-Type and set the value to: application/json in your header.', ResponseAlias::HTTP_BAD_REQUEST));
         }
         switch (basename($this->url())) {
-            case "make-payment"       : return $this->validatePayment();
-            case "fund-wallet"       : return $this->validateFunding();
+            case "transaction"       : return $this->validatePayment();
         }
     }
 
@@ -39,27 +38,20 @@ class TransactionRequest extends BaseFormRequest
     private function validatePayment(): array
     {
         return [
+            'type' => 'required|string|in:Credit,Debit',
             'amount' => [
                 'required',
                 'numeric',
                 'min:100',
                 function($key, $value, $callback) {
-                    /** @var UserWallet $user_wallet */
-                    $user_wallet = UserWallet::repo()->findSingleByWhereClause(['user_id' => $this->controller->getUserId()]);
-                    if(UserWallet::repo()->checkUserWalletSufficiency($user_wallet, $value))
-                        return $callback("Sorry, your wallet balance is not sufficient for this transaction.");
+                    if ($this->type === 'Debit') {
+                        /** @var UserWallet $user_wallet */
+                        $user_wallet = UserWallet::repo()->findSingleByWhereClause(['user_id' => $this->controller->getUserId()]);
+                        if(UserWallet::repo()->checkUserWalletSufficiency($user_wallet, $value))
+                            return $callback("Sorry, your wallet balance is not sufficient for this transaction.");
+                    }
                 }
             ]
-        ];
-    }
-
-    /**
-     * @return string[]
-     */
-    private function validateFunding(): array
-    {
-        return [
-            'amount' => 'required|numeric|min:100'
         ];
     }
 }

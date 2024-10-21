@@ -3,7 +3,6 @@
 namespace App\Traits;
 
 use App\Abstractions\Interfaces\RepositoryInterface;
-use Illuminate\Support\Facades\Log;
 
 trait HasRepositoryTrait
 {

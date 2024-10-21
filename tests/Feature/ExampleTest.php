@@ -163,7 +163,7 @@ class ExampleTest extends TestCase
         $user = User::first();
         $user_wallet = UserWallet::where('user_id', $user->id)->first();
         // Send a GET request to the API endpoint
-        $response = $this->actingAs($user, 'api')->withHeaders(['Accept' => 'application/json'])->getJson('/api/v1/users/wallet-balance');
+        $response = $this->actingAs($user, 'api')->withHeaders(['Accept' => 'application/json'])->getJson('/api/v1/balance');
         // Assert the response is successful
         $response->assertStatus(200)
             ->assertJson([
@@ -193,7 +193,7 @@ class ExampleTest extends TestCase
         $user_wallet = UserWallet::where('user_id', $user->id)->first()->update(['user_id' => null]);
         $user_wallet = UserWallet::where('user_id', $user->id)->first();
         // Send a GET request to the API endpoint
-        $response = $this->actingAs($user, 'api')->withHeaders(['Accept' => 'application/json'])->getJson('/api/v1/users/wallet-balance');
+        $response = $this->actingAs($user, 'api')->withHeaders(['Accept' => 'application/json'])->getJson('/api/v1/balance');
         Log::error(json_encode($user));
         Log::error(json_encode($user_wallet));
         // Assert the response is successful
@@ -215,7 +215,7 @@ class ExampleTest extends TestCase
         $amount = 20000;
         $user = User::first();
         // Send a GET request to the API endpoint
-        $response = $this->actingAs($user, 'api')->withHeaders(['Accept' => 'application/json'])->postJson('/api/v1/users/fund-wallet', ["amount" => $amount]);
+        $response = $this->actingAs($user, 'api')->withHeaders(['Accept' => 'application/json'])->postJson('/api/v1/transaction', ["amount" => $amount, "type" => "Credit"]);
         // Assert the response is successful
         $response->assertStatus(200)
             ->assertJson([
@@ -243,7 +243,7 @@ class ExampleTest extends TestCase
         $user = User::first();
         $user_wallet = UserWallet::where('user_id', $user->id)->first()->update(['balance' => $wallet_balance]);
         // Send a GET request to the API endpoint
-        $response = $this->actingAs($user, 'api')->withHeaders(['Accept' => 'application/json'])->postJson('/api/v1/users/make-payment', ["amount" => $amount]);
+        $response = $this->actingAs($user, 'api')->withHeaders(['Accept' => 'application/json'])->postJson('/api/v1/transaction', ["amount" => $amount, "type" => "Debit"]);
         // Assert the response is successful
         $response->assertStatus(200)
             ->assertJson([
@@ -269,7 +269,7 @@ class ExampleTest extends TestCase
         $amount = 2000;
         $user = User::first();
         // Send a GET request to the API endpoint
-        $response = $this->actingAs($user, 'api')->withHeaders(['Accept' => 'application/json'])->postJson('/api/v1/users/make-payment', ["amount" => $amount]);
+        $response = $this->actingAs($user, 'api')->withHeaders(['Accept' => 'application/json'])->postJson('/api/v1/transaction', ["amount" => $amount, "type" => "Debit"]);
         // Assert the response is successful
         $response->assertStatus(422)
             ->assertJson([

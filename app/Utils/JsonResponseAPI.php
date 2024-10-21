@@ -2,7 +2,6 @@
 
 namespace App\Utils;
 
-
 use Illuminate\Http\JsonResponse;
 
 class JsonResponseAPI
