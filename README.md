@@ -5,6 +5,7 @@
 - PHP 8.2+
 - MySQL 8.0+
 - PhpMyAdmin
+- Postman
 
 ## Clone the repository:
 
@@ -41,11 +42,17 @@ php artisan serve
 ./vendor/bin/sail artisan passport:key --force
 ./vendor/bin/sail artisan passport:client --personal
 ```
+## Postman Doc.
+```
+https://documenter.getpostman.com/view/10224661/2sAXxY4oNx
+```
 ## Testing
 ```
 php artisan test --filter=Feature
 OR
 ./vendor/bin/sail artisan test --filter=Feature
 ```
+
+
 
 
